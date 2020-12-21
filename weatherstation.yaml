@@ -8,10 +8,10 @@ esphome:
   name: $name
   platform: ESP32
   board: pico32
-#  on_boot:
-#    priority: -10
-#    then:
-#      - script.execute: flashing
+  on_boot:
+    priority: -10
+    then:
+      - script.execute: flashing
 
 <<: !include network.yaml
 
@@ -23,16 +23,11 @@ ota:
 api:
   password: !secret password
 
-#mqtt:
-#  broker: !secret mqtt_host
-#  username: !secret mqtt_user
-#  password: !secret mqtt_pass
-
 sun:
   latitude: !secret latitude
   longitude: !secret longitude
 
-#logger:
+logger:
 
 i2c:
   frequency: 100kHz
