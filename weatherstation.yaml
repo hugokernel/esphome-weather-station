@@ -1,0 +1,373 @@
+.script_flashing: !include &flashing libraries/scripts/flashing.yaml
+
+substitutions:
+  name: weatherstation
+  friendly_name: "Weather Station"
+
+esphome:
+  name: $name
+  platform: ESP32
+  board: pico32
+#  on_boot:
+#    priority: -10
+#    then:
+#      - script.execute: flashing
+
+<<: !include network.yaml
+
+captive_portal:
+
+ota:
+  password: !secret password
+
+api:
+  password: !secret password
+
+#mqtt:
+#  broker: !secret mqtt_host
+#  username: !secret mqtt_user
+#  password: !secret mqtt_pass
+
+sun:
+  latitude: !secret latitude
+  longitude: !secret longitude
+
+#logger:
+
+i2c:
+  frequency: 100kHz
+  sda: GPIO26
+  scl: GPIO25
+
+script:
+  - <<: *flashing
+
+sensor:
+  - platform: pulse_counter
+    pin:
+      number: GPIO34
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'm/s'
+    name: "${friendly_name} wind speed"
+    icon: 'mdi:weather-windy'
+    count_mode:
+      rising_edge: DISABLE
+      falling_edge: INCREMENT
+    internal_filter: 13us
+    update_interval: 60s
+    # rotations_per_sec = pulses / 2 / 60
+    # circ_m = 0.09 * 2 * 3.14 = 0.5652
+    # mps = 1.18 * circ_m * rotations_per_sec
+    # mps = 1.18 * 0.5652 / 2 / 60 = 0,0055578
+    filters:
+      - multiply: 0.0055578
+      #- sliding_window_moving_average:
+      #    window_size: 2
+      #    send_every: 1
+
+  - platform: pulse_counter
+    pin:
+      number: GPIO38
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'mm'
+    name: "${friendly_name} rain gauge"
+    icon: 'mdi:weather-rainy'
+    id: rain_gauge
+    internal: true
+    count_mode:
+      rising_edge: DISABLE
+      falling_edge: INCREMENT
+    internal_filter: 13us
+    update_interval: 60s
+    filters:
+      # Each 0.011" (0.2794mm) of rain causes one momentary contact closure
+      - multiply: 0.2794
+    accuracy_decimals: 4
+
+  - platform: integration
+    name: "${friendly_name} rainfall per min"
+    id: rain_per_min
+    time_unit: min
+    unit_of_measurement: 'mm'
+    icon: 'mdi:weather-rainy'
+    sensor: rain_gauge
+
+  - platform: total_daily_energy
+    name: "${friendly_name} total daily rain"
+    power_id: rain_gauge
+    unit_of_measurement: 'mm'
+    icon: 'mdi:weather-rainy'
+    # x60 To convert to aggregated rain amount
+    filters:
+      - multiply: 60
+
+  - platform: bme280
+    address: 0x76
+    update_interval: 60s
+    iir_filter: 16x
+    temperature:
+      name: "${friendly_name} BME280 temperature"
+      id: bme280_temperature
+      oversampling: 16x
+    humidity:
+      name: "${friendly_name} BME280 humidity"
+      id: bme280_humidity
+      oversampling: 16x
+    pressure:
+      name: "${friendly_name} pressure"
+      id: bme280_pressure
+      oversampling: 16x
+
+  - platform: am2320
+    setup_priority: -100
+    temperature:
+      id: am2320_temperature
+      name: "${friendly_name} AM2320 temperature"
+    humidity:
+      id: am2320_humidity
+      name: "${friendly_name} AM2320 humidity"
+    update_interval: 60s
+
+  - platform: template
+    name: "${friendly_name} temperature"
+    icon: "mdi:thermometer"
+    unit_of_measurement: "°C"
+    lambda: |-
+      return (
+        id(bme280_temperature).state
+        +
+        id(am2320_temperature).state
+      ) / 2;
+
+  - platform: template
+    name: "${friendly_name} humidity"
+    icon: "mdi:water-percent"
+    unit_of_measurement: "%"
+    lambda: |-
+      return (
+        id(bme280_humidity).state
+        +
+        id(am2320_humidity).state
+      ) / 2;
+
+  - platform: tsl2561
+    name: "${friendly_name} ambient Light"
+    address: 0x39
+    update_interval: 60s
+    integration_time: 14ms
+    gain: 1x
+
+  - platform: adc
+    pin: GPIO35
+    name: "${friendly_name} input voltage"
+    icon: mdi:car-battery
+    attenuation: 11db
+    accuracy_decimals: 2
+    filters:
+      - calibrate_linear:
+        - 3.24 -> 12.01
+        - 2.80 -> 10.78
+
+  - platform: adc
+    id: source_sensor
+    pin: GPIO37
+    name: ADC
+    attenuation: 11db
+    internal: true
+    update_interval: 5s
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.846153 # 3.9 -> 3.3V
+
+  - platform: ina219
+    address: 0x40
+    shunt_resistance: 0.1 ohm
+    current:
+      name: "${friendly_name} solar current"
+    power:
+      name: "${friendly_name} solar power"
+      id: solar_power
+    bus_voltage:
+      name: "${friendly_name} solar voltage"
+      icon: mdi:car-battery
+    shunt_voltage:
+      name: "${friendly_name} solar shunt voltage"
+    max_voltage: 26V
+    max_current: 3.2A
+    update_interval: 60s
+
+  - platform: total_daily_energy
+    name: "${friendly_name} total daily solar energy"
+    power_id: solar_power
+    unit_of_measurement: "Wh"
+    accuracy_decimals: 2
+
+  - platform: resistance
+    sensor: source_sensor
+    id: resistance_sensor
+    configuration: DOWNSTREAM
+    resistor: 10kOhm
+    internal: true
+    name: Resistance Sensor
+    reference_voltage: 3.9V
+    accuracy_decimals: 1
+    filters:
+      - median:
+          window_size: 7
+          send_every: 4
+          send_first_at: 3
+      #- heartbeat: 30s
+    on_value:
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 15000
+              below: 15500
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "N"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 0.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 5000
+              below: 5500
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "NE"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 45.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 350
+              below: 450
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "E"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 90.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 1200
+              below: 1400
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "SE"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 135.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 2400
+              below: 2500
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "S"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 180.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 8900
+              below: 9200
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "SW"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 225.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 37500
+              below: 38500
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "W"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 270.0
+      - if:
+          condition:
+            sensor.in_range:
+              id: resistance_sensor
+              above: 24400
+              below: 25000
+          then:
+            - text_sensor.template.publish:
+                id: wind_dir_card
+                state: "NW"
+            - sensor.template.publish:
+                id: wind_heading
+                state: 315.0
+
+  - platform: template
+    name: "${friendly_name} wind heading"
+    id: wind_heading
+    unit_of_measurement: "°"
+
+  - platform: sun
+    name: "${friendly_name} Sun elevation"
+    type: elevation
+    update_interval: 120s
+
+  - platform: sun
+    name: "${friendly_name} Sun azimuth"
+    type: azimuth
+    update_interval: 120s
+
+text_sensor:
+  - platform: template
+    name: "${friendly_name} wind cardinal direction"
+    id: wind_dir_card
+
+  - platform: sun
+    name: "${friendly_name} next sunrise"
+    type: sunrise
+    update_interval: 4h
+  - platform: sun
+    name: "${friendly_name} next sunset"
+    type: sunset
+    update_interval: 4h
+
+light:
+  - platform: fastled_clockless
+    chipset: WS2812
+    id: status_light
+    name: "${friendly_name} status light"
+    pin: GPIO2
+    num_leds: 1
+    rgb_order: GRB
+    restore_mode: ALWAYS_OFF
+
+interval:
+  - interval: 60s
+    then:
+      - sensor.integration.reset: rain_per_min
+
+# Enable time component to reset energy at midnight
+time:
+  - platform: sntp
+    timezone: "Europe/Paris"
