@@ -240,4 +240,3 @@ Pensez à positionner la capteur de luminosité le plus haut possible sur votre 
 * weatherstation.yaml: Le fichier de configuration ESPHome
 * network.yaml: Les informations de votre réseau
 * secrets.yaml: Les informations secrètes relatives à votre réseau
-* grafana-dashboard.json: Le fichier représentant le tableau de bord Grafana
