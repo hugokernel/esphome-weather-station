@@ -1,60 +1,62 @@
 # ESPHome Weather Station
 
-![Photo globale de la station météo](images/station.jpg)
+Read this in other language: [French](README.fr.md)
+
+![Main photo of the weather station](images/station.jpg)
 
 ## Introduction
 
-La partie électronique de cette station météo est basée sur le modèle décrit dans un article du magazine Elektor publié en mai 2020 intitulé "Station météo en réseau ouvert V.2" (une évolution de ESP32 Weather Station décrit dans un article du même magazine en janvier 2019).
+The electronic part of this weather station is based on the model described in an article in Elektor magazine published in May 2020 entitled "Remake Elektor weather station" (an evolution of ESP32 Weather Station described in an article in the same magazine in January 2019).
 
-L'article détaille la création d'une station météo basé sur un ensemble de capteurs référencé WH-SP-WS02 ([Datasheet](docs/Weather_Sensor_Assembly_Updated.pdf)) dont l'électronique d'origine est retirée pour être remplacée par une carte fille capteurs relayant les informations à une carte mère architecturée autour d'un ESP32 (ESP32 Pico Kit).
+The article details the creation of a weather station based on a set of sensors referenced WH-SP-WS02 ([Datasheet](docs/Weather_Sensor_Assembly_Updated.pdf)) whose original electronics are removed to be replaced by a sensor daughter board relaying the information to a motherboard built around an ESP32 (ESP32 Pico Kit).
 
-Un micrologiciel OpenSource ([GitHub - ElektorLabs/191148-RemakeWeatherStation: RemakeWeatherStation](https://github.com/ElektorLabs/191148-RemakeWeatherStation)) est disponible et permet de faire fonctionner le tout. Malheureusement, je n'ai pas trouvé mon bonheur avec, il n'est pas encore assez abouti et souffre de quelques lacunes qui le rendent très difficilement utilisable tel quel.
+An OpenSource firmware ([GitHub - ElektorLabs/191148-RemakeWeatherStation: RemakeWeatherStation](https://github.com/ElektorLabs/191148-RemakeWeatherStation)) is available to run the whole system. Unfortunately, I did not find my happiness with it, it is not yet complete enough and suffers from some shortcomings that make it very difficult to use it as is.
 
-J'ai donc décidé d'utiliser ESPHome comme remplacement du programme d'origine afin de simplifier le développement de fonctionnalité mais surtout étendre grandement ses capacités.
+I therefore decided to use ESPHome as a replacement for the original program in order to simplify the development of functionality but above all to greatly extend its capabilities.
 
-La carte détaillée dans l'article d'Elektor se limite finalement à un convertisseur de tension et une adaptation de tension 5V/3V pour l'ESP32.
+The board detailed in Elektor's article is finally limited to a voltage converter and a 5V/3V voltage adaptation for the ESP32.
 
-Il est donc assez simple de recréer cette station météo indépendamment du PCB d'Elektor. Pour les connexions, basez-vous sur les données inclues dans le fichier YAML.
+It is therefore quite simple to recreate this weather station independently of Elektor's PCB. For the connections, please use the data included in the YAML file.
 
-![Photo du boitier](images/boitier.jpg)
+![Case photo](images/boitier.jpg)
 
 ### Inspirations
 
 * [GitHub - mkuoppa/esphomeweatherstation: ESPHome based weatherstation station](https://github.com/mkuoppa/esphomeweatherstation)
 * [ESP8266 Weather Station - with Wind and Rain Sensors | Tysonpower.de](https://tysonpower.de/blog/esp8266-weather-station)
 
-## Caractéristiques
+## Features
 
-* Mesure de la température / humidité relative / pression atmosphérique
-* Vitesse / Direction du vent
-* Précipitations journalière / par minute
-* Luminosité ambiante
-* Tension d'entrée
-* Panneau solaire:
-  * Tension
-  * Courant
-  * Puissance
-  * Puissance accumulée journalière
+* Measurement of temperature / relative humidity / atmospheric pressure
+* Wind speed / Direction
+* Precipitation daily / per minute
+* Ambient brightness
+* Input voltage
+* Solar panel:
+  * Voltage
+  * Current
+  * Power
+  * Daily accumulated power
 
-Note: Sur la photo globale de la station météo, on aperçoit au sommet un boitier, il s'agit d'un module de détection de la pluie indépendant, je publierai la configuration de ce projet à part.
+Note: On the main picture of the weather station, there is a box on top, it is an independent rain detection module, I will publish the configuration of this project separately.
 
 ## Installation
 
-Afin d'installer le firmware sur l'ESP32, je vous invite à suivre la démarche décrite sur le site d'ESPHome: [Getting Started with ESPHome](https://esphome.io/guides/getting_started_command_line.html)
+In order to install the firmware on the ESP32, I invite you to follow the procedure described on the ESPHome website: [Getting Started with ESPHome](https://esphome.io/guides/getting_started_command_line.html)
 
-## Mécanique
+## Mechanical
 
-Pour le mat, j'ai utilisé un tube de PVC renforcé en métal que vous pouvez trouver dans tout magasin de bricolage au rayon plomberie. Afin de fixer ce dernier sur un mûr, j'ai modélisé sur OpenSCAD [une pièce](wall_pipe_support.scad) que j'ai par la suite imprimé en PETG.
+For the mast, I used a metal reinforced PVC tube that you can find in any DIY store in the plumbing department. In order to fix it on a wall, I modeled it on OpenSCAD [one piece](wall_pipe_support.scad) that I then printed in PETG.
 
-On aperçoit ici la pièce imprimée à côté du boitier contenant le régulateur de charger pour panneau solaire:
+Here is the printed piece next to the box containing the solar panel charger controller:
 
-![Photo du boitier d'alimentation](images/boitier_alimentation.jpg)
+![Photo of the power supply box](images/boitier_alimentation.jpg)
 
-## Explications
+## Explanations
 
-### Mesure de température / humidité / pression atmosphérique
+### Measurement of temperature / humidity / atmospheric pressure
 
-Ces 3 grandeurs sont mesurées par un capteur Bosch BME280 et sa configuration dans ESPHome est la suivante:
+These 3 quantities are measured by a Bosch BME280 sensor and its configuration in ESPHome is as follows:
 
 ```yaml
   - platform: bme280
@@ -72,9 +74,9 @@ Ces 3 grandeurs sont mesurées par un capteur Bosch BME280 et sa configuration d
       oversampling: 16x
 ```
 
-Le capteur est à mettre à l'intérieur du boitier contenant l'électronique d'origine des capteurs.
+The sensor is to be put inside the box containing the original sensor electronics.
 
-Initialement, j'avais également inclu un capteur AM2320 afin de comparer les valeurs des capteurs avec la configuration suivante:
+Initially, I also included an AM2320 sensor to compare the sensor values with the following configuration:
 
 ```yaml
   - platform: am2320
@@ -88,7 +90,7 @@ Initialement, j'avais également inclu un capteur AM2320 afin de comparer les va
     update_interval: 60s
 ```
 
-Les températures et humidités des capteurs étaient moyennées avant d'être envoyé à Home Assistant (voir ci-dessous), il était bien entendu possible d'accéder aux données de chaque capteurs.
+The temperatures and humidities of the sensors were averaged before being sent to Home Assistant (see below), it was of course possible to access the data of each sensor.
 
 ```yaml
   - platform: template
@@ -114,14 +116,14 @@ Les températures et humidités des capteurs étaient moyennées avant d'être e
       ) / 2;
 ```
 
-En conclution de mes tests, le capteur BME280 est plus fiable et plus précis que le capteur AM2320.
+At the end of my tests, the BME280 sensor is more reliable and more accurate than the AM2320 sensor.
 
-### Mesures relatives au vent
+### Wind measurements
 
-#### Vitesse
+#### Speed
 
-La capteur de mesure de vitesse du vent est relié à l'entrée générale 34.
-La plateforme ESPHome pulse_counter est utilisé pour réaliser la mesure.
+The wind speed sensor is connected to general input 34.
+The ESPHome pulse_counter platform is used to perform the measurement.
 
 ```yaml
   - platform: pulse_counter
@@ -144,11 +146,11 @@ La plateforme ESPHome pulse_counter est utilisé pour réaliser la mesure.
       - multiply: 0.0055578
 ```
 
-#### Direction
+#### Management
 
-La direction du vent est faite dans le capteur à l'aide d'aimant (switch reed) qui commute des résistances. Selon la valeur finale, on en déduit la direction.
+The wind direction is made in the sensor by means of magnets (switch reed) that switch resistors. Depending on the final value, the direction is deduced.
 
-Un exemple de la configuration ESPHome:
+An example of the ESPHome configuration:
 
 ```yaml
   - platform: resistance
@@ -182,10 +184,10 @@ Un exemple de la configuration ESPHome:
 [...]
 ```
 
-#### Pluie
+#### Rain
 
-La mesure des précipitations est réalisée par un système de balancier composé de 2 coupelles, l'eau ruisselle dans l'entonnoir du capteur et rempli la coupelle haute, une fois cette dernière remplie, elle bascule par gravité. Ce mouvement est détecté par un capteur magnétique (reed switch) et une impulsion est générée.
-La documentation du capteur indique que chaque impulsion correspond à 0.2794mm de précipitation.
+The measurement of precipitation is carried out by a system of pendulum composed of 2 cups, the water runs in the funnel of the sensor and fills the high cup, once the latter is filled, it tips by gravity. This movement is detected by a magnetic sensor (reed switch) and an impulse is generated.
+The sensor documentation indicates that each pulse corresponds to 0.2794mm of precipitation.
 
 ```yaml
   - platform: pulse_counter
@@ -208,7 +210,7 @@ La documentation du capteur indique que chaque impulsion correspond à 0.2794mm 
     accuracy_decimals: 4
 ```
 
-Afin d'avoir des informations plus pertinentes, on convertie ces mesures en précipitations par minute et on calcul le cumul journalier.
+In order to have more relevant information, these measurements are converted into precipitation per minute and the daily total is calculated.
 
 ```yaml
   - platform: integration
@@ -229,9 +231,9 @@ Afin d'avoir des informations plus pertinentes, on convertie ces mesures en pré
       - multiply: 60
 ```
 
-#### Luminosité
+#### Brightness
 
-Pensez à positionner la capteur de luminosité le plus haut possible sur votre station météo afin qu'il ne subisse pas l'ombre du mat ou d'une partie de la station météo.
+Remember to position the brightness sensor as high as possible on your weather station so that it is not shaded by the mast or any part of the weather station.
 
 ```yaml
   - platform: tsl2561
@@ -243,9 +245,10 @@ Pensez à positionner la capteur de luminosité le plus haut possible sur votre 
     gain: 1x
 ```
 
-## Fichiers
+## Files
 
-* weatherstation.yaml: Le fichier de configuration ESPHome
-* network.yaml: Les informations de votre réseau
-* secrets.yaml: Les informations secrètes relatives à votre réseau
-* wall_pipe_support.scad: Le fichier OpenSCAD pour le support de mat
+* weatherstation.yaml: The ESPHome configuration file
+* network.yaml: Your network information
+* secrets.yaml: The secret information about your network.
+* wall_pipe_support.scad: The OpenSCAD file for mat support.
+
