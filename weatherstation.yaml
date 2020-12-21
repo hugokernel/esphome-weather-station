@@ -106,49 +106,17 @@ sensor:
     update_interval: 60s
     iir_filter: 16x
     temperature:
-      name: "${friendly_name} BME280 temperature"
+      name: "${friendly_name} temperature"
       id: bme280_temperature
       oversampling: 16x
     humidity:
-      name: "${friendly_name} BME280 humidity"
+      name: "${friendly_name} humidity"
       id: bme280_humidity
       oversampling: 16x
     pressure:
       name: "${friendly_name} pressure"
       id: bme280_pressure
       oversampling: 16x
-
-  - platform: am2320
-    setup_priority: -100
-    temperature:
-      id: am2320_temperature
-      name: "${friendly_name} AM2320 temperature"
-    humidity:
-      id: am2320_humidity
-      name: "${friendly_name} AM2320 humidity"
-    update_interval: 60s
-
-  - platform: template
-    name: "${friendly_name} temperature"
-    icon: "mdi:thermometer"
-    unit_of_measurement: "°C"
-    lambda: |-
-      return (
-        id(bme280_temperature).state
-        +
-        id(am2320_temperature).state
-      ) / 2;
-
-  - platform: template
-    name: "${friendly_name} humidity"
-    icon: "mdi:water-percent"
-    unit_of_measurement: "%"
-    lambda: |-
-      return (
-        id(bme280_humidity).state
-        +
-        id(am2320_humidity).state
-      ) / 2;
 
   - platform: tsl2561
     name: "${friendly_name} ambient Light"
