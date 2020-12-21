@@ -1,0 +1,21 @@
+- id: flashing
+  # It's too complicated to create this effect with
+  # the ESPHome’s light effects system
+  mode: single
+  then:
+    - while:
+        condition:
+          lambda: "return true;"
+        then:
+          - light.turn_on:
+              id: status_light
+              transition_length: 100ms
+              brightness: 100%
+              red: 0%
+              green: 100%
+              blue: 0%
+          - delay: 100ms
+          - light.turn_off:
+              id: status_light
+              transition_length: 100ms
+          - delay: 10s
