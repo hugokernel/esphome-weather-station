@@ -42,6 +42,14 @@ Note: Sur la photo globale de la station météo, on aperçoit au sommet un boit
 
 Afin d'installer le firmware sur l'ESP32, je vous invite à suivre la démarche décrite sur le site d'ESPHome: [Getting Started with ESPHome](https://esphome.io/guides/getting_started_command_line.html)
 
+## Mécanique
+
+Pour le mat, j'ai utilisé un tube de PVC renforcé en métal que vous pouvez trouver dans tout magasin de bricolage au rayon plomberie. Afin de fixer ce dernier sur un mûr, j'ai modélisé sur OpenSCAD [une pièce](wall_pipe_support.scad) que j'ai par la suite imprimé en PETG.
+
+On aperçoit ici la pièce imprimée à côté du boitier contenant le régulateur de charger pour panneau solaire:
+
+![Photo du boitier d'alimentation](images/boitier_alimentation.jpg)
+
 ## Explications
 
 ### Mesure de température / humidité / pression atmosphérique
@@ -240,3 +248,4 @@ Pensez à positionner la capteur de luminosité le plus haut possible sur votre 
 * weatherstation.yaml: Le fichier de configuration ESPHome
 * network.yaml: Les informations de votre réseau
 * secrets.yaml: Les informations secrètes relatives à votre réseau
+* wall_pipe_support.scad: Le fichier OpenSCAD pour le support de mat
