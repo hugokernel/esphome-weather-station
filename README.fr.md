@@ -37,6 +37,11 @@ Il est donc assez simple de recréer cette station météo indépendamment du PC
   * Courant
   * Puissance
   * Puissance accumulée journalière
+* Led de statut RGB à base de WS2812
+* Toutes les fonctions utilisables avec ESPHome
+  * MQTT
+  * OTA (Over The Air updates)
+  * (La liste est longue)[https://esphome.io/]
 
 Note: Sur la photo globale de la station météo, on aperçoit au sommet un boitier, il s'agit d'un module de détection de la pluie indépendant, je publierai la configuration de ce projet à part.
 
