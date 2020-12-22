@@ -41,7 +41,7 @@ It is therefore quite simple to recreate this weather station independently of E
 * All ESPHome features
   * MQTT
   * OTA (Over The Air updates)
-  * (The list is long)[https://esphome.io/]
+  * [The list is long](https://esphome.io/)
 
 Note: On the main picture of the weather station, there is a box on top, it is an independent rain detection module, I will publish the configuration of this project separately.
 
