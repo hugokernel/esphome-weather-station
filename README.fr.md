@@ -6,7 +6,7 @@ Read this in other language: [English](README.md)
 
 ## Introduction
 
-La partie électronique de cette station météo est basée sur le modèle décrit dans un article du magazine Elektor publié en mai 2020 intitulé "Station météo en réseau ouvert V.2" (une évolution de ESP32 Weather Station décrit dans un article du même magazine en janvier 2019).
+La partie électronique de cette station météo est basée sur le modèle décrit dans un article du magazine Elektor publié en mai 2020 intitulé [Station météo en réseau ouvert V.2](https://www.elektormagazine.fr/magazine/elektor-148/58640) (une évolution de ESP32 Weather Station décrit dans un article du même magazine en janvier 2019).
 
 L'article détaille la création d'une station météo basé sur un ensemble de capteurs référencé WH-SP-WS02 ([Datasheet](docs/Weather_Sensor_Assembly_Updated.pdf)) dont l'électronique d'origine est retirée pour être remplacée par une carte fille capteurs relayant les informations à une carte mère architecturée autour d'un ESP32 (ESP32 Pico Kit).
 
@@ -22,6 +22,8 @@ Il est donc assez simple de recréer cette station météo indépendamment du PC
 
 ### Inspirations
 
+* [Station météo en réseau ouvert V.2 | Elektor Magazine](https://www.elektormagazine.fr/magazine/elektor-148/58640)
+* [Remake Elektor weather station | Elektor Magazine](https://www.elektormagazine.com/labs/remake-elektor-weather-station)
 * [GitHub - mkuoppa/esphomeweatherstation: ESPHome based weatherstation station](https://github.com/mkuoppa/esphomeweatherstation)
 * [ESP8266 Weather Station - with Wind and Rain Sensors | Tysonpower.de](https://tysonpower.de/blog/esp8266-weather-station)
 

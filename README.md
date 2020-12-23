@@ -6,7 +6,7 @@ Read this in other language: [French](README.fr.md)
 
 ## Introduction
 
-The electronic part of this weather station is based on the model described in an article in Elektor magazine published in May 2020 entitled "Remake Elektor weather station" (an evolution of ESP32 Weather Station described in an article in the same magazine in January 2019).
+The electronic part of this weather station is based on the model described in an article in Elektor magazine published in May 2020 entitled [Remake Elektor weather station](https://www.elektormagazine.com/labs/remake-elektor-weather-station) (an evolution of ESP32 Weather Station described in an article in the same magazine in January 2019).
 
 The article details the creation of a weather station based on a set of sensors referenced WH-SP-WS02 ([Datasheet](docs/Weather_Sensor_Assembly_Updated.pdf)) whose original electronics are removed to be replaced by a sensor daughter board relaying the information to a motherboard built around an ESP32 (ESP32 Pico Kit).
 
@@ -22,6 +22,7 @@ It is therefore quite simple to recreate this weather station independently of E
 
 ### Inspirations
 
+* [Remake Elektor weather station | Elektor Magazine](https://www.elektormagazine.com/labs/remake-elektor-weather-station)
 * [GitHub - mkuoppa/esphomeweatherstation: ESPHome based weatherstation station](https://github.com/mkuoppa/esphomeweatherstation)
 * [ESP8266 Weather Station - with Wind and Rain Sensors | Tysonpower.de](https://tysonpower.de/blog/esp8266-weather-station)
 
