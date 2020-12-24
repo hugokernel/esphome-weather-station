@@ -59,6 +59,29 @@ On aperçoit ici la pièce imprimée à côté du boitier contenant le régulate
 
 ![Photo du boitier d'alimentation](images/boitier_alimentation.jpg)
 
+## Alimentation
+
+Un des défauts que je reproche à la carte originale d'Elektor, c'est d'avoir lié la technologie de la source de courant à la carte mère (en l'occurence la batterie au plomb), en effet, un (MAX8212)[docs/MAX8211-MAX8212.pdf] utilisé avec quelques composants périphériques permet de couper l'alimentation lorsque celle-ci passe en dessous d'un seuil défini par la valeur de 3 résistances. Ce seuil à été choisi afin de protéger une batterie au plomb.
+
+Dans la mesure ou une station météo est censé rester allumée en permanence, je ne comprend pas vraiment le choix ci-dessus car:
+
+* On utilise un panneau solaire afin d'assurer la charge de la batterie mais dans ce cas, nous sommes obligé d'utiliser un régulateur de charge qui assure également la protection de la batterie et donc le circuit de protection intégré est redondant et peut même poser problême.
+* On branche la station sur une source de courant illimitée (secteur via un régulateur) et dans ce cas, le circuit de protection ne sert à rien.
+
+Dans les 2 cas mentionnés ci-dessus, on introduit un lien fort sur la carte mère avec la technologie de la batterie, ce qui devrait être fait, AMHA, sur une carte / module indépendant.
+
+Pour ma part, j'ai choisi d'alimenter ma station météo via un [panneau solaire de 30W](https://www.amazon.fr/gp/product/B07MZKLS4Z/ref=as_li_tl?ie=UTF8&camp=1642&creative=6746&creativeASIN=B07MZKLS4Z&linkCode=as2&tag=digita049-21&linkId=f280ba939aba379ee4586d3211f88c44) et un [contrôleur de charge relativement basique](https://www.amazon.fr/gp/product/B07K57WZVP/ref=as_li_tl?ie=UTF8&camp=1642&creative=6746&creativeASIN=B07K57WZVP&linkCode=as2&tag=digita049-21&linkId=d3af4f9616f8d0f0eea5031ee318a9b9).
+
+Si vous utilisez la carte mère d'Elektor avec un module de régulation de charge indépendant, n'oubliez pas d'abaisser le seuil de coupure du MAX8212.
+
+En sortie du panneau solaire, le circuit [INA219](docs/ina219.pdf) permet de mesurer la puissance générée par ce dernier. J'ai d'ailleurs prévu de le remplacer par un [INA3221](docs/ina3221.pdf) afin de pouvoir mesurer également la consommation totale de la station météo et m'aider à affiner la consommation globale (un RFLink avec [OpenMQTTGateway](https://github.com/1technophile/OpenMQTTGateway) et un second kit ESP32 est branché sur la station).
+
+J'utilise une batterie au plomb de 7A récupérée d'un onduleur.
+
+Pour dimensionner le tout, je vous recommande l'outil [BatteryStuff Tools](https://www.batterystuff.com/kb/tools/solar-calculator.html) qui est très pratique.
+
+Actuellement, je ne peux pas dire avoir réussi à rendre ma station météo totalement indépendante énergétiquement parlant à cause d'une mauvaise exposition de mon panneau solaire et d'une consommation trop forte d'un module annexe (module de détection de pluie).
+
 ## Explications
 
 ### Mesure de température / humidité / pression atmosphérique
