@@ -61,7 +61,7 @@ On aperçoit ici la pièce imprimée à côté du boitier contenant le régulate
 
 ## Alimentation
 
-Un des défauts que je reproche à la carte originale d'Elektor, c'est d'avoir lié la technologie de la source de courant à la carte mère (en l'occurence la batterie au plomb), en effet, un (MAX8212)[docs/MAX8211-MAX8212.pdf] utilisé avec quelques composants périphériques permet de couper l'alimentation lorsque celle-ci passe en dessous d'un seuil défini par la valeur de 3 résistances. Ce seuil à été choisi afin de protéger une batterie au plomb.
+Un des défauts que je reproche à la carte originale d'Elektor, c'est d'avoir lié la technologie de la source de courant à la carte mère (en l'occurence la batterie au plomb), en effet, un [MAX8212](docs/MAX8211-MAX8212.pdf) utilisé avec quelques composants périphériques permet de couper l'alimentation lorsque celle-ci passe en dessous d'un seuil défini par la valeur de 3 résistances. Ce seuil à été choisi afin de protéger une batterie au plomb.
 
 Dans la mesure ou une station météo est censé rester allumée en permanence, je ne comprend pas vraiment le choix ci-dessus car:
 
