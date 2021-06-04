@@ -175,7 +175,7 @@ The ESPHome pulse_counter platform is used to perform the measurement.
       - multiply: 0.0055578
 ```
 
-#### Management
+#### Direction
 
 The wind direction is made in the sensor by means of magnets (switch reed) that switch resistors. Depending on the final value, the direction is deduced.
 
