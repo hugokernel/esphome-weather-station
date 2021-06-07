@@ -10,7 +10,7 @@ The electronic part of this weather station is based on the model described in a
 
 The article details the creation of a weather station based on a set of sensors referenced WH-SP-WS02 ([Datasheet](docs/Weather_Sensor_Assembly_Updated.pdf)) whose original electronics are removed to be replaced by a sensor daughter board relaying the information to a motherboard built around an ESP32 (ESP32 Pico Kit).
 
-An OpenSource firmware ([GitHub - ElektorLabs/191148-RemakeWeatherStation: RemakeWeatherStation](https://github.com/ElektorLabs/191148-RemakeWeatherStation)) is available to run the whole system. Unfortunately, I did not find my happiness with it, it is not yet complete enough and suffers from some shortcomings that make it very difficult to use it as is.
+An OpenSource firmware [GitHub - ElektorLabs/191148-RemakeWeatherStation: RemakeWeatherStation](https://github.com/ElektorLabs/191148-RemakeWeatherStation) is available to run the whole system. Unfortunately, I did not find my happiness with it, it is not yet complete enough and suffers from some shortcomings that make it very difficult to use it as is.
 
 I therefore decided to use ESPHome as a replacement for the original program in order to simplify the development of functionality but above all to greatly extend its capabilities.
 
