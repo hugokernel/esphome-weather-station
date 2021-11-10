@@ -45,7 +45,7 @@ Il est donc assez simple de recréer cette station météo indépendamment du PC
   * OTA (Over The Air updates)
   * [La liste est longue](https://esphome.io/)
 
-Note: Sur la photo globale de la station météo, on aperçoit au sommet un boitier, il s'agit d'un module de détection de la pluie indépendant, je publierai la configuration de ce projet à part.
+Note: Sur la photo globale de la station météo, on aperçoit au sommet un boitier, il s'agit d'un module de détection de [la pluie indépendant](https://github.com/hugokernel/esphome-rain-detector).
 
 ## Installation
 
