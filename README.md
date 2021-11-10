@@ -18,6 +18,8 @@ The board detailed in Elektor's article is finally limited to a voltage converte
 
 It is therefore quite simple to recreate this weather station independently of Elektor's PCB. For the connections, please use the data included in the YAML file.
 
+With the kind [permission of Elektor](https://www.elektormagazine.com/labs/remake-elektor-weather-station#comment-70057), the schematic diagrams are available here:  [Schematics](schematics/).
+
 ![Case photo](images/boitier.jpg)
 
 ### Inspirations

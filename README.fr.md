@@ -18,6 +18,8 @@ La carte détaillée dans l'article d'Elektor se limite finalement à un convert
 
 Il est donc assez simple de recréer cette station météo indépendamment du PCB d'Elektor. Pour les connexions, basez-vous sur les données inclues dans le fichier YAML.
 
+Avec l'aimable [autorisation d'Elektor](https://www.elektormagazine.com/labs/remake-elektor-weather-station#comment-70057), les schémas de principe sont disponibles ici : [Schémas de principe](schematics/).
+
 ![Photo du boitier](images/boitier.jpg)
 
 ### Inspirations
