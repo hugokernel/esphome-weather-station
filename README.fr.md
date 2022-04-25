@@ -167,8 +167,9 @@ La plateforme ESPHome pulse_counter est utilisé pour réaliser la mesure.
 ```yaml
   - platform: pulse_counter
     pin:
+      # Don't forget to add a pulling resistor, see README
       number: GPIO34
-      mode: INPUT_PULLUP
+      mode: INPUT
     unit_of_measurement: 'm/s'
     name: "${friendly_name} wind speed"
     icon: 'mdi:weather-windy'
@@ -231,8 +232,9 @@ La documentation du capteur indique que chaque impulsion correspond à 0.2794mm 
 ```yaml
   - platform: pulse_counter
     pin:
+      # Don't forget to add a pulling resistor, see README
       number: GPIO38
-      mode: INPUT_PULLUP
+      mode: INPUT
     unit_of_measurement: 'mm'
     name: "${friendly_name} rain gauge"
     icon: 'mdi:weather-rainy'
