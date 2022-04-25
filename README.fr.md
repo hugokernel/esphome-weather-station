@@ -288,7 +288,7 @@ Pensez à positionner la capteur de luminosité le plus haut possible sur votre 
 
 ## Fichiers
 
-* weatherstation.yaml: Le fichier de configuration ESPHome
-* network.yaml: Les informations de votre réseau
-* secrets.yaml: Les informations secrètes relatives à votre réseau
-* wall_pipe_support.scad: Le fichier OpenSCAD pour le support de mat
+* [weatherstation.yaml](weatherstation.yaml): Le fichier de configuration ESPHome
+* [network.yaml](network.yaml): Les informations de votre réseau
+* [secrets.yaml](secrets.yaml): Les informations secrètes relatives à votre réseau
+* [wall_pipe_support.scad](wall_pipe_support.scad): Le fichier OpenSCAD pour le support de mat

@@ -287,8 +287,7 @@ Remember to position the brightness sensor as high as possible on your weather s
 
 ## Files
 
-* weatherstation.yaml: The ESPHome configuration file
-* network.yaml: Your network information
-* secrets.yaml: The secret information about your network.
-* wall_pipe_support.scad: The OpenSCAD file for mat support.
-
+* [weatherstation.yaml](weatherstation.yaml): The ESPHome configuration file
+* [network.yaml](network.yaml): Your network information
+* [secrets.yaml](secrets.yaml): The secret information about your network.
+* [wall_pipe_support.scad](wall_pipe_support.scad): The OpenSCAD file for mat support.
