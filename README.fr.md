@@ -53,6 +53,13 @@ Note: Sur la photo globale de la station météo, on aperçoit au sommet un boit
 
 Afin d'installer le firmware sur l'ESP32, je vous invite à suivre la démarche décrite sur le site d'ESPHome: [Getting Started with ESPHome](https://esphome.io/guides/getting_started_command_line.html)
 
+## Électronique
+
+La carte électronique d'Elektor est à utiliser tel quel ou, au vu de sa simplicité, à reproduire sur une platine d'essai.
+
+La publication d'Elektor est erronée, en effet, ils utilisent les GPIO 34 (vitesse du vent) et 38 (mesure de précipitation) directement sans résistance de tirage (`pullup`),
+de plus, ces entrées / sorties n'intégrent pas de résistance de tirage, **il faut donc ajouter une résistance de tirage (~10kOhms) sur GPIO34 et GPIO38**.
+
 ## Mécanique
 
 Pour le mat, j'ai utilisé un tube de PVC renforcé en métal que vous pouvez trouver dans tout magasin de bricolage au rayon plomberie. Afin de fixer ce dernier sur un mûr, j'ai modélisé sur OpenSCAD [une pièce](wall_pipe_support.scad) que j'ai par la suite imprimé en PETG.

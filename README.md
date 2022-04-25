@@ -52,6 +52,13 @@ Note: On the main picture of the weather station, there is a box on top, it is a
 
 In order to install the firmware on the ESP32, I invite you to follow the procedure described on the ESPHome website: [Getting Started with ESPHome](https://esphome.io/guides/getting_started_command_line.html)
 
+## Electronics
+
+The Elektor electronic board is to be used as is or, in view of its simplicity, to be reproduced on a test board.
+
+The Elektor publication is wrong, in fact, they use GPIO 34 (wind speed) and 38 (precipitation measurement) directly without a pullup resistor,
+Moreover, these inputs / outputs do not integrate a pull-up resistor, **so it is necessary to add a pullup resistor (~10kOhms) on GPIO34 and GPIO38**.
+
 ## Mechanical
 
 For the mast, I used a metal reinforced PVC tube that you can find in any DIY store in the plumbing department. In order to fix it on a wall, I modeled it on OpenSCAD [one piece](wall_pipe_support.scad) that I then printed in PETG.
