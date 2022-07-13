@@ -51,13 +51,8 @@ sensor:
       rising_edge: DISABLE
       falling_edge: INCREMENT
     internal_filter: 13us
-    update_interval: 60s
-    # rotations_per_sec = pulses / 2 / 60
-    # circ_m = 0.09 * 2 * 3.14 = 0.5652
-    # mps = 1.18 * circ_m * rotations_per_sec
-    # mps = 1.18 * 0.5652 / 2 / 60 = 0,0055578
     filters:
-      - multiply: 0.0055578
+      - multiply: 0.005560619
       #- sliding_window_moving_average:
       #    window_size: 2
       #    send_every: 1

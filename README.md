@@ -160,29 +160,54 @@ At the end of my tests, the BME280 sensor is more reliable and more accurate tha
 
 #### Speed
 
-The wind speed sensor is connected to general input 34.
-The ESPHome pulse_counter platform is used to perform the measurement.
+The wind speed sensor is connected to general input 34 and the ESPHome `pulse_meter` platform is now used to perform the measurement.
+
+You need to add a pulling resistor on the GPIO34 (there is no internal pullup on this GPIO).
+
+##### Speed calculation
+
+1. First, check the number of pulses by revolution (`$number_of_pulses_by_revolution`)
+2. Then, we need the circumference of the anemomenter, to do that, measure the radius of the anemomenter in meter.
+\
+In the example below, the radius is 9cm.
+```
+circumference_in_meter = $radius * 2 * π
+circumference_in_meter = 0.09 * 2 * 3.14
+circumference_in_meter = 0.565486678
+```
+3. Now, we can found the number of rotations per seconds by counting the number of pulses for one rotation
+\
+`rotations_per_sec = pulses / $number_of_pulses_by_revolution / 60`
+4. Next, we multiply circumference and rotation par second to have the wind speed.
+\
+Note: 1.18 is a calibration factor to compensate the friction (you can adjust it).
+```
+meter_per_second = 1.18 * circumference_in_meter * $rotations_per_sec
+meter_per_second = 1.18 * circumference_in_meter * 1 / $number_of_pulses_by_revolution / 60
+meter_per_second = 1.18 * 0.565486678 / 2 / 60
+meter_per_second = 0.005560619
+```
+
+Initial formula from https://github.com/mkuoppa/esphomeweatherstation/issues/2#issuecomment-812686624
+
+For more information about calculation, see https://github.com/hugokernel/esphome-weather-station/issues/6
 
 ```yaml
-  - platform: pulse_counter
+  - platform: pulse_meter
     pin:
-      # Don't forget to add a pulling resistor, see README
       number: GPIO34
       mode: INPUT
+    id: wind_speed
     unit_of_measurement: 'm/s'
     name: "${friendly_name} wind speed"
     icon: 'mdi:weather-windy'
-    count_mode:
-      rising_edge: DISABLE
-      falling_edge: INCREMENT
     internal_filter: 13us
-    update_interval: 60s
-    # rotations_per_sec = pulses / 2 / 60
-    # circ_m = 0.09 * 2 * 3.14 = 0.5652
-    # mps = 1.18 * circ_m * rotations_per_sec
-    # mps = 1.18 * 0.5652 / 2 / 60 = 0,0055578
+    timeout: 5s
     filters:
-      - multiply: 0.0055578
+      - multiply: 0.005560619
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 5
 ```
 
 #### Direction
