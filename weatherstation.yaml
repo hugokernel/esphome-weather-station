@@ -38,7 +38,7 @@ script:
   - <<: *flashing
 
 sensor:
-  - platform: pulse_counter
+  - platform: pulse_meter
     pin:
       # Don't forget to add a pulling resistor, see README
       number: GPIO34
@@ -47,15 +47,13 @@ sensor:
     unit_of_measurement: 'm/s'
     name: "${friendly_name} wind speed"
     icon: 'mdi:weather-windy'
-    count_mode:
-      rising_edge: DISABLE
-      falling_edge: INCREMENT
     internal_filter: 13us
+    timeout: 5s
     filters:
       - multiply: 0.005560619
-      #- sliding_window_moving_average:
-      #    window_size: 2
-      #    send_every: 1
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 5
 
   - platform: copy
     name: '${friendly_name} wind speed average'
