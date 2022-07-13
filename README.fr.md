@@ -161,29 +161,53 @@ En conclution de mes tests, le capteur BME280 est plus fiable et plus précis qu
 
 #### Vitesse
 
-La capteur de mesure de vitesse du vent est relié à l'entrée générale 34.
-La plateforme ESPHome pulse_counter est utilisé pour réaliser la mesure.
+La capteur de mesure de vitesse du vent est relié à l'entrée générale 34 et la plateforme ESPHome `pulse_meter` est maintenant utilisée pour réaliser la mesure.
+
+Vous devez ajouter une résistance de tirage vers VCC sur la broche GPIO45 (il n'y a pas de résistance de tirage interne sur cette GPIO).
+
+##### Calcul de la vitesse
+
+1. En premier, comptez le nombre d'impulsion de votre capteur par tour (`$number_of_pulses_by_revolution`)
+2. Ensuite, nous avons besoin de la circonférence de l'anémomètre, pour cela, mesurez le rayon de l'anémomètre en mètre.
+\
+Dans l'exemple suivant, le rayon est de 9cm.
+```
+circumference_in_meter = $radius * 2 * π
+circumference_in_meter = 0.09 * 2 * 3.14
+circumference_in_meter = 0.565486678
+```
+3. Maintenant, nous avons le nombre de rotations par seconde en comptant le nombre d'impulsions pour une rotation
+\
+`rotations_per_sec = pulses / $number_of_pulses_by_revolution / 60`
+4. Enfin, multiplions la circonférence et la rotation par seconde pour obtenir la vitesse du vente.
+Note: 1.18 est un facteur de calibration pour compenser la friction mécanique des éléments de la girouette (vous pouvez l'ajuster).
+```
+meter_per_second = 1.18 * circumference_in_meter * $rotations_per_sec
+meter_per_second = 1.18 * circumference_in_meter * 1 / $number_of_pulses_by_revolution / 60
+meter_per_second = 1.18 * 0.565486678 / 2 / 60
+meter_per_second = 0.005560619
+```
+
+Formule initiale de https://github.com/mkuoppa/esphomeweatherstation/issues/2#issuecomment-812686624
+
+Pour plus d'information à propos des calculs, voir https://github.com/hugokernel/esphome-weather-station/issues/6
 
 ```yaml
-  - platform: pulse_counter
+  - platform: pulse_meter
     pin:
-      # Don't forget to add a pulling resistor, see README
       number: GPIO34
       mode: INPUT
+    id: wind_speed
     unit_of_measurement: 'm/s'
     name: "${friendly_name} wind speed"
     icon: 'mdi:weather-windy'
-    count_mode:
-      rising_edge: DISABLE
-      falling_edge: INCREMENT
     internal_filter: 13us
-    update_interval: 60s
-    # rotations_per_sec = pulses / 2 / 60
-    # circ_m = 0.09 * 2 * 3.14 = 0.5652
-    # mps = 1.18 * circ_m * rotations_per_sec
-    # mps = 1.18 * 0.5652 / 2 / 60 = 0,0055578
+    timeout: 5s
     filters:
-      - multiply: 0.0055578
+      - multiply: 0.005560619
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 5
 ```
 
 #### Direction

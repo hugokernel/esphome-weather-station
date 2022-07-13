@@ -38,28 +38,93 @@ script:
   - <<: *flashing
 
 sensor:
-  - platform: pulse_counter
+  - platform: pulse_meter
     pin:
       # Don't forget to add a pulling resistor, see README
       number: GPIO34
       mode: INPUT
+    id: wind_speed
     unit_of_measurement: 'm/s'
     name: "${friendly_name} wind speed"
     icon: 'mdi:weather-windy'
-    count_mode:
-      rising_edge: DISABLE
-      falling_edge: INCREMENT
     internal_filter: 13us
-    update_interval: 60s
-    # rotations_per_sec = pulses / 2 / 60
-    # circ_m = 0.09 * 2 * 3.14 = 0.5652
-    # mps = 1.18 * circ_m * rotations_per_sec
-    # mps = 1.18 * 0.5652 / 2 / 60 = 0,0055578
+    timeout: 5s
     filters:
-      - multiply: 0.0055578
-      #- sliding_window_moving_average:
-      #    window_size: 2
-      #    send_every: 1
+      - multiply: 0.005560619
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 5
+
+  - platform: copy
+    name: '${friendly_name} wind speed average'
+    icon: 'mdi:weather-windy'
+    id: wind_speed_avg
+    source_id: wind_speed
+    unit_of_measurement: 'm/s'
+    filters:
+      - throttle_average: 5s
+
+  - platform: copy
+    name: '${friendly_name} wind speed (km/h)'
+    id: wind_speed_kmh
+    source_id: wind_speed
+    unit_of_measurement: 'km/h'
+    icon: 'mdi:weather-windy'
+    filters:
+      - multiply: 3.6
+
+  - platform: copy
+    name: '${friendly_name} wind speed average (km/h)'
+    icon: 'mdi:weather-windy'
+    id: wind_speed_kmh_avg
+    source_id: wind_speed_avg
+    unit_of_measurement: 'km/h'
+    filters:
+      - multiply: 3.6
+    on_value:
+      lambda: |-
+        if (x < 1) {
+          id(wind_scale_code).publish_state("0");
+          id(wind_scale).publish_state("Calm");
+        } else if (x >= 1 && x < 6) {
+          id(wind_scale_code).publish_state("1");
+          id(wind_scale).publish_state("Light Air");
+        } else if (x >= 6 && x < 12) {
+          id(wind_scale_code).publish_state("2");
+          id(wind_scale).publish_state("Light Breeze");
+        } else if (x >= 12 && x < 20) {
+          id(wind_scale_code).publish_state("3");
+          id(wind_scale).publish_state("Gentle Breeze");
+        } else if (x >= 20 && x < 29) {
+          id(wind_scale_code).publish_state("4");
+          id(wind_scale).publish_state("Moderate Breeze");
+        } else if (x >= 29 && x < 39) {
+          id(wind_scale_code).publish_state("5");
+          id(wind_scale).publish_state("Fresh Breeze");
+        } else if (x >= 39 && x < 50) {
+          id(wind_scale_code).publish_state("6");
+          id(wind_scale).publish_state("Strong Breeze");
+        } else if (x >= 50 && x < 62) {
+          id(wind_scale_code).publish_state("7");
+          id(wind_scale).publish_state("Near Gale");
+        } else if (x >= 62 && x < 75) {
+          id(wind_scale_code).publish_state("8");
+          id(wind_scale).publish_state("Gale");
+        } else if (x >= 75 && x < 89) {
+          id(wind_scale_code).publish_state("9");
+          id(wind_scale).publish_state("Severe Gale");
+        } else if (x >= 89 && x < 103) {
+          id(wind_scale_code).publish_state("10");
+          id(wind_scale).publish_state("Storm");
+        } else if (x >= 103 && x < 118) {
+          id(wind_scale_code).publish_state("11");
+          id(wind_scale).publish_state("Violent Storm");
+        } else if (x >= 118) {
+          id(wind_scale_code).publish_state("12");
+          id(wind_scale).publish_state("Hurricane Force");
+        } else {
+          ESP_LOGD("main", "It shouldn't happen (wind_speed_kmh_avg: %f)", x);
+        }
 
   - platform: pulse_counter
     pin:
@@ -316,6 +381,17 @@ text_sensor:
     name: "${friendly_name} next sunset"
     type: sunset
     update_interval: 4h
+
+  - platform: template
+    name: '${friendly_name} Beaufort wind scale'
+    icon: 'mdi:tailwind'
+    id: wind_scale
+    update_interval: never
+
+  - platform: template
+    name: '${friendly_name} Beaufort wind scale code'
+    icon: 'mdi:tailwind'
+    id: wind_scale_code
 
 light:
   - platform: fastled_clockless
