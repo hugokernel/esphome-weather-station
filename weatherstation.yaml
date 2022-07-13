@@ -52,8 +52,8 @@ sensor:
     filters:
       - multiply: 0.005560619
       - sliding_window_moving_average:
-          window_size: 5
-          send_every: 5
+          window_size: 20
+          send_every: 20
 
   - platform: copy
     name: '${friendly_name} wind speed average'
