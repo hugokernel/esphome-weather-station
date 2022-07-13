@@ -63,11 +63,29 @@ sensor:
       #    send_every: 1
 
   - platform: copy
+    name: '${friendly_name} wind speed average'
+    icon: 'mdi:weather-windy'
+    id: wind_speed_avg
+    source_id: wind_speed
+    unit_of_measurement: 'm/s'
+    filters:
+      - throttle_average: 5s
+
+  - platform: copy
     name: '${friendly_name} wind speed (km/h)'
     id: wind_speed_kmh
     source_id: wind_speed
     unit_of_measurement: 'km/h'
     icon: 'mdi:weather-windy'
+    filters:
+      - multiply: 3.6
+
+  - platform: copy
+    name: '${friendly_name} wind speed average (km/h)'
+    icon: 'mdi:weather-windy'
+    id: wind_speed_kmh_avg
+    source_id: wind_speed_avg
+    unit_of_measurement: 'km/h'
     filters:
       - multiply: 3.6
 
